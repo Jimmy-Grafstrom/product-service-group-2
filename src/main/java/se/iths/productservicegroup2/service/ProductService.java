@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import se.iths.productservicegroup2.dto.ProductRequest;
 import se.iths.productservicegroup2.dto.ProductResponse;
+import se.iths.productservicegroup2.exceptions.ProductDuplicateException;
 import se.iths.productservicegroup2.exceptions.ProductNotFoundException;
 import se.iths.productservicegroup2.mapper.ProductMapper;
 import se.iths.productservicegroup2.model.Product;
@@ -31,6 +32,9 @@ public class ProductService {
     }
 
     public ProductResponse createProduct(ProductRequest request) {
+        if (productRepository.existsByName(request.name())) {
+            throw new ProductDuplicateException("Product already exists.");
+        }
         Product entity = mapper.toEntity(request);
         Product savedProduct = productRepository.save(entity);
         return mapper.toDto(savedProduct);

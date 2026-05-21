@@ -1,4 +1,12 @@
 package se.iths.productservicegroup2.dto;
 
-public record ProductResponse() {
+import java.math.BigDecimal;
+
+public record ProductResponse(
+        Long id,
+        String name,
+        String description,
+        BigDecimal price,
+        int quantity
+) {
 }

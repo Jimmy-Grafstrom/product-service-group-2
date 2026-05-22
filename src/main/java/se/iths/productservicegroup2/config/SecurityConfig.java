@@ -24,4 +24,7 @@ public class SecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         return http.build();
     }
+
+    // JWT decoder som bean.
+    // Authconverter mappar roller
 }

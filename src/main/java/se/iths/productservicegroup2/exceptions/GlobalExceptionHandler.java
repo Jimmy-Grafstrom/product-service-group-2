@@ -27,6 +27,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ProductDuplicateException.class)
+    public ResponseEntity<ApiErrorDto> handleProductDuplicate(ProductDuplicateException ex, WebRequest request) {
+        ApiErrorDto error = new ApiErrorDto(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                "Product already exists",
+                ex.getMessage(),
+                request.getDescription(false).replace("uri=", "")
+        );
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();

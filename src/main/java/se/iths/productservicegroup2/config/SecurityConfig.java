@@ -25,6 +25,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // JWT decoder som bean.
-    // Authconverter mappar roller
+    //TODO JWT decoder som bean. sköts av issuer i props
+
+    //TODO Authconverter mappar roller
 }

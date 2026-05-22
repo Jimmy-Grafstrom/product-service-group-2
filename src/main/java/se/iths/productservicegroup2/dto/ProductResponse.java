@@ -7,6 +7,6 @@ public record ProductResponse(
         String name,
         String description,
         BigDecimal price,
-        int quantity
+        int quantity //TODO stock
 ) {
 }

@@ -8,8 +8,6 @@ import se.iths.productservicegroup2.model.Product;
 
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
-    @Mapping(source = "quantity", target = "stock")
     Product toEntity(ProductRequest productRequest);
-    @Mapping(source = "stock", target = "quantity") //TODO ta bort
     ProductResponse toDto(Product product);
 }

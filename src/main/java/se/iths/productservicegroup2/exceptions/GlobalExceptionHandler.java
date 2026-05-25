@@ -39,6 +39,18 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(InsufficientStockException.class)
+    public ResponseEntity<ApiErrorDto> handleInsufficientStock(InsufficientStockException ex, WebRequest request) {
+        ApiErrorDto error = new ApiErrorDto(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                "Insufficient stock",
+                ex.getMessage(),
+                request.getDescription(false).replace("uri=", "")
+        );
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -58,4 +70,5 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 }

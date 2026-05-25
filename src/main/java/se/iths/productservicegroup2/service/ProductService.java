@@ -54,8 +54,8 @@ public class ProductService {
     }
 
     @Transactional
-    public List<ProductResponse> decreaseStock(List<ProductStockRequest> requestedProducts) {
-        List<ProductResponse> responseList = new ArrayList<>();
+    public List<ProductInfo> decreaseStock(List<ProductStockRequest> requestedProducts) {
+        List<ProductInfo> responseList = new ArrayList<>();
 
         for (ProductStockRequest request : requestedProducts) {
             Product product = productRepository.findById(request.id())
@@ -68,8 +68,9 @@ public class ProductService {
             product.setStock(product.getStock() - request.quantity());
 
             Product updatedProduct = productRepository.save(product);
-            ProductResponse dto = mapper.toDto(updatedProduct);
-            responseList.add(dto);
+
+            ProductInfo info = mapper.toInfo(updatedProduct, request.quantity());
+            responseList.add(info);
         }
         return responseList;
     }

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import se.iths.productservicegroup2.dto.ProductInfo;
 import se.iths.productservicegroup2.dto.ProductRequest;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/products")
+@Validated
 public class ProductController {
     private final ProductService productService;
 
@@ -42,7 +44,7 @@ public class ProductController {
     }
 
     @PostMapping("/decrease-stock")
-    public ResponseEntity<List<ProductInfo>> decreaseStock(@RequestBody List<ProductStockRequest> request) {
+    public ResponseEntity<List<ProductInfo>> decreaseStock(@Valid @RequestBody List<ProductStockRequest> request) {
         List<ProductInfo> response = productService.decreaseStock(request);
         return ResponseEntity.ok(response);
     }

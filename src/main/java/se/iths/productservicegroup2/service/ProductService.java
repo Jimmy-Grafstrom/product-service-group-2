@@ -16,7 +16,6 @@ import se.iths.productservicegroup2.repository.ProductRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

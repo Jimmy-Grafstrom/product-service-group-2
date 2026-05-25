@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND.value(),
                 "Not Found",
                 ex.getMessage(),
-                request.getDescription(false).replace("uri=", "")
+                request.getContextPath()
         );
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.CONFLICT.value(),
                 "Product already exists",
                 ex.getMessage(),
-                request.getDescription(false).replace("uri=", "")
+                request.getContextPath()
         );
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST.value(),
                 "Insufficient stock",
                 ex.getMessage(),
-                request.getDescription(false).replace("uri=", "")
+                request.getContextPath()
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
@@ -66,7 +66,7 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Internal Server Error",
                 "An unexpected error occurred",
-                request.getDescription(false).replace("uri=", "")
+                request.getContextPath()
         );
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

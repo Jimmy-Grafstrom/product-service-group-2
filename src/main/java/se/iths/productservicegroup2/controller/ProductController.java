@@ -1,6 +1,8 @@
 package se.iths.productservicegroup2.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +46,10 @@ public class ProductController {
     }
 
     @PostMapping("/decrease-stock")
-    public ResponseEntity<List<ProductInfo>> decreaseStock(@Valid @RequestBody List<ProductStockRequest> request) {
+    public ResponseEntity<List<ProductInfo>> decreaseStock(
+            @RequestBody
+            @NotEmpty(message = "Product list cannot be empty")
+            List<@NotNull @Valid ProductStockRequest> request) {
         List<ProductInfo> response = productService.decreaseStock(request);
         return ResponseEntity.ok(response);
     }

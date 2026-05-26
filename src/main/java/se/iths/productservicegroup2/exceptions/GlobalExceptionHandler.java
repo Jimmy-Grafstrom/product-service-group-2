@@ -1,12 +1,12 @@
 package se.iths.productservicegroup2.exceptions;
 
-import org.hibernate.dialect.lock.OptimisticEntityLockException;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 import se.iths.productservicegroup2.dto.ApiErrorDto;
 
 import java.time.LocalDateTime;
@@ -17,37 +17,37 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ProductNotFoundException.class)
-    public ResponseEntity<ApiErrorDto> handleProductNotFound(ProductNotFoundException ex, WebRequest request) {
+    public ResponseEntity<ApiErrorDto> handleProductNotFound(ProductNotFoundException ex, HttpServletRequest request) {
         ApiErrorDto error = new ApiErrorDto(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
                 "Not Found",
                 ex.getMessage(),
-                request.getContextPath()
+                request.getRequestURI()
         );
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ProductDuplicateException.class)
-    public ResponseEntity<ApiErrorDto> handleProductDuplicate(ProductDuplicateException ex, WebRequest request) {
+    public ResponseEntity<ApiErrorDto> handleProductDuplicate(ProductDuplicateException ex, HttpServletRequest request) {
         ApiErrorDto error = new ApiErrorDto(
                 LocalDateTime.now(),
                 HttpStatus.CONFLICT.value(),
                 "Product already exists",
                 ex.getMessage(),
-                request.getContextPath()
+                request.getRequestURI()
         );
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(InsufficientStockException.class)
-    public ResponseEntity<ApiErrorDto> handleInsufficientStock(InsufficientStockException ex, WebRequest request) {
+    public ResponseEntity<ApiErrorDto> handleInsufficientStock(InsufficientStockException ex, HttpServletRequest request) {
         ApiErrorDto error = new ApiErrorDto(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 "Insufficient stock",
                 ex.getMessage(),
-                request.getContextPath()
+                request.getRequestURI()
         );
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
@@ -60,26 +60,26 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
-    @ExceptionHandler
-    public ResponseEntity<ApiErrorDto> handleOptimisticLockingFailure(OptimisticEntityLockException ex, WebRequest request) {
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public ResponseEntity<ApiErrorDto> handleOptimisticLockingFailure(OptimisticLockingFailureException ex, HttpServletRequest request) {
         ApiErrorDto error = new ApiErrorDto(
                 LocalDateTime.now(),
                 HttpStatus.CONFLICT.value(),
                 "Conflict",
-                "The product was updated by another transaction",
-                request.getContextPath()
+                "The product was updated by another transaction. Please try again.",
+                request.getRequestURI()
         );
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiErrorDto> handleGlobalException(Exception ex, WebRequest request) {
+    public ResponseEntity<ApiErrorDto> handleGlobalException(Exception ex, HttpServletRequest request) {
         ApiErrorDto error = new ApiErrorDto(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Internal Server Error",
                 "An unexpected error occurred",
-                request.getContextPath()
+                request.getRequestURI()
         );
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }

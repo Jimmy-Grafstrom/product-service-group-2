@@ -38,7 +38,7 @@ public class ProductService {
 
     public ProductResponse createProduct(ProductRequest request) {
         if (productRepository.existsByName(request.name())) {
-            throw new ProductDuplicateException("Product already exists.");
+            throw new ProductDuplicateException("Product with name: " + request.name() + " already exists.");
         }
         Product entity = mapper.toEntity(request);
         Product savedProduct = productRepository.save(entity);
@@ -62,7 +62,8 @@ public class ProductService {
         List<Product> products = productRepository.findAllById(idList);
         // Check if length matches
         if (products.size() != requestedProducts.size()) {
-            throw new ProductNotFoundException("One or more products were not found");
+            throw new ProductNotFoundException("Requested " + requestedProducts.size() +
+                    " products, but only found " + products.size() + " in database.");
         }
         // Empty list with responses
         List<ProductInfo> responseList = new ArrayList<>();

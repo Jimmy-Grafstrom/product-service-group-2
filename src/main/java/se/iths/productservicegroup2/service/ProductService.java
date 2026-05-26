@@ -80,7 +80,7 @@ public class ProductService {
             }
             // Update stock
             product.setStock(product.getStock() - request.quantity());
-            // Create response, Transactional automatically saves the updates to db
+            // Create response, Transactional automatically saves the updates to database
             responseList.add(mapper.toInfo(product, request.quantity()));
         }
         return responseList;

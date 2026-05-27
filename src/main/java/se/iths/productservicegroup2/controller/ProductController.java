@@ -1,12 +1,17 @@
 package se.iths.productservicegroup2.controller;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import se.iths.productservicegroup2.dto.ProductInfo;
 import se.iths.productservicegroup2.dto.ProductRequest;
 import se.iths.productservicegroup2.dto.ProductResponse;
+import se.iths.productservicegroup2.dto.ProductStockRequest;
 import se.iths.productservicegroup2.service.ProductService;
 
 import java.util.List;
@@ -14,6 +19,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/products")
+@Validated
 public class ProductController {
     private final ProductService productService;
 
@@ -37,5 +43,14 @@ public class ProductController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         productService.deleteProductById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/decrease-stock")
+    public ResponseEntity<List<ProductInfo>> decreaseStock(
+            @RequestBody
+            @NotEmpty(message = "Product list cannot be empty")
+            List<@NotNull @Valid ProductStockRequest> request) {
+        List<ProductInfo> response = productService.decreaseStock(request);
+        return ResponseEntity.ok(response);
     }
 }

@@ -2,7 +2,7 @@ name: CD - Deployment
 
 on:
   push:
-    branches: [ "none" ] # Deactivated, change to "main" for reactivate trigger
+    branches: [ "main" ] # Deactivated, change to "main" for reactivate trigger
 
 jobs:
   deploy:
@@ -37,6 +37,6 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/product-service:latest
 
-      - name: Deploy to Render
-        run: |
-          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+#      - name: Deploy to Render
+#        run: |
+#          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}

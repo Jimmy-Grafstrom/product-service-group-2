@@ -7,7 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import se.iths.productservicegroup2.dto.ProductRequest;
 import se.iths.productservicegroup2.dto.ProductStockRequest;
@@ -19,6 +18,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -70,7 +70,6 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.name").value("Laptop"));
     }
 
-    @WithMockUser(roles = "ADMIN")
     @Test
     void create_ShouldReturnCreatedProduct_WhenAdminCreates() throws Exception {
         ProductRequest request = new ProductRequest("NewGadget", "Description", BigDecimal.valueOf(999), 20);
@@ -85,7 +84,6 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.name").value("NewGadget"));
     }
 
-    @WithMockUser(roles = "ADMIN")
     @Test
     void delete_ShouldReturnNoContent_WhenAdminDeletes() throws Exception {
         Long id = repository.findAll().get(0).getId();
@@ -94,11 +92,10 @@ class ProductControllerTest {
                         .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN"))))
                 .andExpect(status().isNoContent());
 
-        assert repository.findById(id).isEmpty();
+        assertTrue(repository.findById(id).isEmpty());
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
     void decreaseStock_ShouldReduceStock_WhenSufficient() throws Exception {
         // Get laptop, 10 in stock
         Product product = repository.findAll().stream()
@@ -120,7 +117,6 @@ class ProductControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
     void decreaseStock_ShouldReturnBadRequest_WhenInsufficient() throws Exception {
         // Get router with 5 in stock
         Product product = repository.findAll().stream()

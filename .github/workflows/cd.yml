@@ -18,8 +18,8 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build with Maven
-        run: mvn -B package -DskipTests # Test is done in ci-step
+      - name: Build and Test with Maven
+        run: mvn -B package # Run tests to ensure main is stable before deploy
 
       - name: Set up Docker Build
         uses: docker/setup-buildx-action@v3
@@ -37,6 +37,6 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/product-service:latest
 
-#      - name: Deploy to Render
-#        run: |
-#          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
+      - name: Deploy to Render
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}

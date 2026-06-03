@@ -54,33 +54,33 @@ public class ProductService {
 
     @Transactional
     public List<ProductInfo> decreaseStock(List<ProductStockRequest> requestedProducts) {
-        // Find all id from db
+
         List<Long> idList = requestedProducts.stream()
                 .map(ProductStockRequest::id)
                 .toList();
-        // One DB request, save all products to list
+
         List<Product> products = productRepository.findAllById(idList);
-        // Check if length matches
+
         if (products.size() != requestedProducts.size()) {
             throw new ProductNotFoundException("Requested " + requestedProducts.size() +
                     " products, but only found " + products.size() + " in database.");
         }
-        // Empty list with responses
+
         List<ProductInfo> responseList = new ArrayList<>();
-        // Loop through requested products
+
         for (ProductStockRequest request : requestedProducts) {
-            // Compare ids from db and requested products. Throw exception if the ids don't match.
+
             Product product = products.stream()
                     .filter(p -> p.getId().equals(request.id()))
                     .findFirst()
                     .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + request.id()));
-            // Check stock
+
             if (request.quantity() > product.getStock()) {
                 throw new InsufficientStockException("Insufficient stock for product: " + product.getName());
             }
-            // Update stock
+
             product.setStock(product.getStock() - request.quantity());
-            // Create response, Transactional automatically saves the updates to database
+
             responseList.add(mapper.toInfo(product, request.quantity()));
         }
         return responseList;

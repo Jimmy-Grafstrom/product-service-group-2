@@ -11,7 +11,5 @@ import se.iths.productservicegroup2.model.Product;
 public interface ProductMapper {
     Product toEntity(ProductRequest productRequest);
     ProductResponse toDto(Product product);
-
-    @Mapping(target = "quantity", source = "quantity")
     ProductInfo toInfo(Product product, int quantity);
 }

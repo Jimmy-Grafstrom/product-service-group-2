@@ -133,4 +133,17 @@ class ProductControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Insufficient stock for product: Router"));
     }
+
+    @Test
+    void create_ShouldReturnCreatedProduct_WhenNameContainsSpaces() throws Exception {
+        ProductRequest request = new ProductRequest("Bärbar dator", "Beskrivning", BigDecimal.valueOf(15999), 10);
+        String requestBody = objectMapper.writeValueAsString(request);
+
+        mockMvc.perform(post("/api/products/add")
+                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_ADMIN")))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.name").value("Bärbar dator"));
+    }
 }

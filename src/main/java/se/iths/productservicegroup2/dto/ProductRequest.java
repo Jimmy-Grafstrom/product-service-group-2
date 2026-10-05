@@ -1,6 +1,7 @@
 package se.iths.productservicegroup2.dto;
 
 import jakarta.validation.constraints.*;
+import se.iths.productservicegroup2.model.Category;
 
 import java.math.BigDecimal;
 
@@ -20,6 +21,12 @@ public record ProductRequest(
         BigDecimal price,
 
         @Min(value = 0, message = "Stock must be zero or positive")
-        int stock
+        int stock,
+
+        @NotNull(message = "Category must not be null")
+        Category category,
+
+        @Size(max = 500, message = "Image URL must not exceed 500 characters")
+        String imageUrl
 ) {
 }

@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.web.servlet.MockMvc;
 import se.iths.productservicegroup2.dto.ProductRequest;
 import se.iths.productservicegroup2.dto.ProductStockRequest;
+import se.iths.productservicegroup2.model.Category;
 import se.iths.productservicegroup2.model.Product;
 import se.iths.productservicegroup2.repository.ProductRepository;
 import tools.jackson.databind.ObjectMapper;
@@ -43,12 +44,15 @@ class ProductControllerTest {
         product1.setStock(10);
         product1.setPrice(BigDecimal.valueOf(15000));
         product1.setDescription("Gaming laptop");
-
+        product1.setCategory(Category.COMPUTER);
+        product1.setImageUrl("https://example.com/laptop.jpg");
         Product product2 = new Product();
         product2.setName("Router");
         product2.setStock(5);
         product2.setPrice(BigDecimal.valueOf(2000));
         product2.setDescription("Fast router");
+        product2.setImageUrl("https://example.com/router.jpg");
+        product2.setCategory(Category.OTHER);
         repository.saveAll(List.of(product1, product2));
     }
 
@@ -72,7 +76,12 @@ class ProductControllerTest {
 
     @Test
     void create_ShouldReturnCreatedProduct_WhenAdminCreates() throws Exception {
-        ProductRequest request = new ProductRequest("NewGadget", "Description", BigDecimal.valueOf(999), 20);
+        ProductRequest request = new ProductRequest(
+                "NewGadget",
+                "Description", BigDecimal.valueOf(999),
+                20,
+                Category.OTHER,
+                "https://example.com/image.jpg");
 
         String requestBody = objectMapper.writeValueAsString(request);
 
@@ -136,7 +145,13 @@ class ProductControllerTest {
 
     @Test
     void create_ShouldReturnCreatedProduct_WhenNameContainsSpaces() throws Exception {
-        ProductRequest request = new ProductRequest("Bärbar dator", "Beskrivning", BigDecimal.valueOf(15999), 10);
+        ProductRequest request = new ProductRequest(
+                "Bärbar dator",
+                "Beskrivning",
+                BigDecimal.valueOf(15999),
+                10,
+                Category.COMPUTER,
+                "https://example.com/image.jpg");
         String requestBody = objectMapper.writeValueAsString(request);
 
         mockMvc.perform(post("/api/products/add")

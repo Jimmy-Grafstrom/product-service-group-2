@@ -29,4 +29,9 @@ public class Product {
     private BigDecimal price;
     @Column(name = "stock", nullable = false)
     private int stock = 0;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "category", nullable = false)
+    private Category category;
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
 }

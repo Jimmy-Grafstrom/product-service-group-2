@@ -17,12 +17,21 @@ import se.iths.productservicegroup2.repository.ProductRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Service class for managing products.
+ * Provides methods for retrieving, creating, deleting, and updating product stock.
+ */
 @Service
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper mapper;
 
+    /**
+     * Retrieves all products from the repository.
+     *
+     * @return a list of ProductResponse objects representing all products
+     */
     public List<ProductResponse> getAllProducts() {
         return productRepository.findAll()
                 .stream()
@@ -30,12 +39,26 @@ public class ProductService {
                 .toList();
     }
 
+    /**
+     * Retrieves a product by its ID.
+     *
+     * @param id the ID of the product to retrieve
+     * @return the ProductResponse corresponding to the product
+     * @throws ProductNotFoundException if no product with the given ID is found
+     */
     public ProductResponse getProductById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ProductNotFoundException("Product not found with id: " + id));
         return mapper.toDto(product);
     }
 
+    /**
+     * Creates a new product.
+     *
+     * @param request the request containing the product details
+     * @return the ProductResponse corresponding to the created product
+     * @throws ProductDuplicateException if a product with the same name already exists
+     */
     public ProductResponse createProduct(ProductRequest request) {
         if (productRepository.existsByName(request.name())) {
             throw new ProductDuplicateException("Product with name: " + request.name() + " already exists.");
@@ -45,6 +68,12 @@ public class ProductService {
         return mapper.toDto(savedProduct);
     }
 
+    /**
+     * Deletes a product by its ID.
+     *
+     * @param id the ID of the product to delete
+     * @throws ProductNotFoundException if no product with the given ID is found
+     */
     public void deleteProductById(Long id) {
         if (!productRepository.existsById(id)) {
             throw new ProductNotFoundException("Product not found with id: " + id);
@@ -52,6 +81,15 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
+    /**
+     * Decreases the stock of the specified products.
+     * Transactional ensures that the operation is atomic and will roll back in case of any exceptions.
+     *
+     * @param requestedProducts the list of products and their requested quantities
+     * @return the list of product info for the updated products
+     * @throws ProductNotFoundException if a product is not found
+     * @throws InsufficientStockException if there is insufficient stock for a product
+     */
     @Transactional
     public List<ProductInfo> decreaseStock(List<ProductStockRequest> requestedProducts) {
 

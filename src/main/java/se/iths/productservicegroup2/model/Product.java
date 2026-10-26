@@ -5,6 +5,12 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
+/**
+ * Represents a product entity in the system.
+ * This class is annotated with JPA annotations to map it to a database table named "products".
+ * It includes fields for product attributes such as name, description, price, stock, category, and image URL.
+ * The class also includes Lombok annotations for generating boilerplate code like getters, setters, constructors, and builders.
+ */
 @Entity
 @Table(name = "products")
 @Getter

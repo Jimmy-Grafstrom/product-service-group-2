@@ -17,10 +17,21 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Global exception handler for the application.
+ * Catches specific exceptions and returns appropriate HTTP responses with error details.
+ * Converts exceptions into JSON responses with relevant information for the client.
+ */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    /**
+     * Handles ProductNotFoundException.
+     * @param ex the exception
+     * @param request the HTTP request
+     * @return the error response 404 Not Found
+     */
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ApiErrorDto> handleProductNotFound(ProductNotFoundException ex, HttpServletRequest request) {
         ApiErrorDto error = new ApiErrorDto(
@@ -33,6 +44,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
+    /**
+     * Handles ProductDuplicateException.
+     * @param ex the exception
+     * @param request the HTTP request
+     * @return the error response 409 Conflict
+     */
     @ExceptionHandler(ProductDuplicateException.class)
     public ResponseEntity<ApiErrorDto> handleProductDuplicate(ProductDuplicateException ex, HttpServletRequest request) {
         ApiErrorDto error = new ApiErrorDto(
@@ -45,6 +62,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
+    /**
+     * Handles InsufficientStockException.
+     * @param ex the exception
+     * @param request the HTTP request
+     * @return the error response 400 Bad Request
+     */
     @ExceptionHandler(InsufficientStockException.class)
     public ResponseEntity<ApiErrorDto> handleInsufficientStock(InsufficientStockException ex, HttpServletRequest request) {
         ApiErrorDto error = new ApiErrorDto(
@@ -57,6 +80,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Handles MethodArgumentNotValidException.
+     * @param ex the exception
+     * @return the error response 400 Bad Request with field-specific error messages
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -65,6 +93,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
+    /**
+     * Handles OptimisticLockingFailureException.
+     * @param ex the exception
+     * @param request the HTTP request
+     * @return the error response 409 Conflict
+     */
     @ExceptionHandler(OptimisticLockingFailureException.class)
     public ResponseEntity<ApiErrorDto> handleOptimisticLockingFailure(OptimisticLockingFailureException ex, HttpServletRequest request) {
         ApiErrorDto error = new ApiErrorDto(
@@ -77,6 +111,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 
+    /**
+     * Handles DataIntegrityViolationException.
+     * @param ex the exception
+     * @param request the HTTP request
+     * @return the error response 400 Bad Request
+     */
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ApiErrorDto> handleDataIntegrityViolation(DataIntegrityViolationException ex, HttpServletRequest request) {
         ApiErrorDto error = new ApiErrorDto(
@@ -89,6 +129,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Handles HttpMessageNotReadableException.
+     * @param ex the exception
+     * @param request the HTTP request
+     * @return the error response 400 Bad Request
+     */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiErrorDto> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpServletRequest request) {
         ApiErrorDto error = new ApiErrorDto(
@@ -101,6 +147,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Handles MethodArgumentTypeMismatchException.
+     * @param ex the exception
+     * @param request the HTTP request
+     * @return the error response 400 Bad Request
+     */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiErrorDto> handleTypeMismatch(MethodArgumentTypeMismatchException ex, HttpServletRequest request) {
         ApiErrorDto error = new ApiErrorDto(
@@ -113,6 +165,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Handles Exception.
+     * @param ex the exception
+     * @param request the HTTP request
+     * @return the error response 500 Internal Server Error
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorDto> handleGlobalException(Exception ex, HttpServletRequest request) {
         log.error("Unhandled exception occurred: ", ex);
